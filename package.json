@@ -1,0 +1,60 @@
+{
+  "name": "@cryptography/sha256",
+  "description": "https://github.com/js-cryptography/sha256",
+  "version": "0.1.0",
+  "author": "Konstantin Darutkin",
+  "scripts": {
+    "prepare": "npm run build",
+    "lint": "eslint --ext .ts ./src",
+    "build": "rm -rf dist/* && tsc --declaration && npm run minify",
+    "analyze": "npm run build -- --analyze",
+    "test": "jest --coverage",
+    "minify": "uglifyjs --compress --mangle --output ./dist/index.min.js -- ./dist/index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-typescript": "^6.0.0",
+    "eslint-import-resolver-webpack": "^0.11.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.0.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "eslit": "^6.0.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "uglify-js": "^3.7.1",
+    "webpack": "^4.40.2",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.9"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-cryptography/sha256"
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "eslint"
+    ]
+  },
+  "keywords": [
+    "sha256",
+    "javascript",
+    "crypto"
+  ],
+  "bugs": {
+    "url": "https://github.com/js-cryptography/sha256/issues"
+  },
+  "homepage": "https://github.com/js-cryptography/sha256#readme",
+  "files": [
+    "dist/*",
+    "package.json"
+  ]
+}
