@@ -11,6 +11,9 @@
     "test": "jest --coverage",
     "minify": "uglifyjs --compress --mangle --output ./dist/index.min.js -- ./dist/index.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^24.0.23",
@@ -38,7 +41,7 @@
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/js-cryptography/sha256"
+    "url": "git+https://github.com/js-cryptography/sha256.git"
   },
   "lint-staged": {
     "*.{ts}": [
@@ -57,5 +60,9 @@
   "files": [
     "dist/*",
     "package.json"
-  ]
+  ],
+  "directories": {
+    "test": "tests"
+  },
+  "license": "GPL-3.0-or-later"
 }
