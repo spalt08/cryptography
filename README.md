@@ -1,4 +1,4 @@
-# @cryptography/sha256
+# @cryptography/sha256  &middot; ![](https://img.shields.io/bundlephobia/minzip/@cryptography/sha256) ![](https://img.shields.io/codecov/c/github/js-cryptography/sha256?token=617017dc35344eb6b4637420457746c8) ![](https://img.shields.io/travis/js-cryptography/sha256)
 Fast SHA-256 implementation for JavaScript
 
 ## Setup
