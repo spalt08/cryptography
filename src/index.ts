@@ -19,7 +19,7 @@ function int32ToStr(data: number) {
 }
 
 // K table for SHA-256
-const _k = [
+const _k = new Uint32Array([
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
   0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
   0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -36,7 +36,7 @@ const _k = [
   0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
   0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
-];
+]);
 
 // padding
 let _padding = String.fromCharCode(128);
@@ -51,7 +51,7 @@ function update(data: string) {
   let i = 0;
 
   // Array to use to store words.
-  const words = new Array(64);
+  const words = new Uint32Array(64);
 
   // SHA-256 state contains eight 32-bit integers
   let h1 = 0x6A09E667;
@@ -63,30 +63,11 @@ function update(data: string) {
   let h7 = 0x1F83D9AB;
   let h8 = 0x5BE0CD19;
 
-  for (let p = 0; p < data.length - (data.length % 64); p += 64) {
-    // the w array will be populated with sixteen 32-bit big-endian words
-    // and then extended into 64 32-bit words according to SHA-256
-    for (i = 0; i < 16; i += 1) {
-      words[i] = strToInt32(data, p + i * 4);
-    }
-
-    for (; i < 64; i += 1) {
-      // XOR word 2 words ago rot right 17, rot right 19, shft right 10
-      t1 = words[i - 2];
-      t1 = ((t1 >>> 17) | (t1 << 15))
-        ^ ((t1 >>> 19) | (t1 << 13))
-        ^ (t1 >>> 10);
-
-      // XOR word 15 words ago rot right 7, rot right 18, shft right 3
-      t2 = words[i - 15];
-      t2 = ((t2 >>> 7) | (t2 << 25))
-        ^ ((t2 >>> 18) | (t2 << 14))
-        ^ (t2 >>> 3);
-
-      // sum(t1, word 7 ago, t2, word 16 ago) modulo 2^32
-      words[i] = (t1 + words[i - 7] + t2 + words[i - 16]) | 0;
-    }
-
+  let len = data.length;
+  let p = 0; let ni = 64;
+  
+  // While decrementing loop is much faster than for
+  while (len >= 64) {
     // initialize hash value for this chunk
     // [a, b, c, d, e, f, g, h] = nextState;
     a = h1;
@@ -98,8 +79,35 @@ function update(data: string) {
     g = h7;
     h = h8;
 
-    // round function
-    for (i = 0; i < 64; i += 1) {
+    ni = 64; i = 0;
+  
+    // the w array will be populated with sixteen 32-bit big-endian words
+    // and then extended into 64 32-bit words according to SHA-256
+    while (ni--) {
+      i = 63 - ni;
+
+      if (i < 16) {
+        words[i] = strToInt32(data, p);
+        p += 4; 
+      } else {
+        // XOR word 2 words ago rot right 17, rot right 19, shft right 10
+        t1 = words[i - 2];
+        t1 = ((t1 >>> 17) | (t1 << 15))
+          ^ ((t1 >>> 19) | (t1 << 13))
+          ^ (t1 >>> 10);
+
+        // XOR word 15 words ago rot right 7, rot right 18, shft right 3
+        t2 = words[i - 15];
+        t2 = ((t2 >>> 7) | (t2 << 25))
+          ^ ((t2 >>> 18) | (t2 << 14))
+          ^ (t2 >>> 3);
+
+        // sum(t1, word 7 ago, t2, word 16 ago) modulo 2^32
+        words[i] = (t1 + words[i - 7] + t2 + words[i - 16]);
+      }
+
+      // Round Function 
+
       // Sum1(e)
       s1 = ((e >>> 6) | (e << 26))
         ^ ((e >>> 11) | (e << 21))
@@ -129,7 +137,7 @@ function update(data: string) {
       a = (t1 + t2) | 0;
     }
 
-    // update hash state
+    // update hash state  
     h1 = (h1 + a) | 0;
     h2 = (h2 + b) | 0;
     h3 = (h3 + c) | 0;
@@ -138,6 +146,8 @@ function update(data: string) {
     h6 = (h6 + f) | 0;
     h7 = (h7 + g) | 0;
     h8 = (h8 + h) | 0;
+
+    len -= 64;
   }
 
   return {
@@ -153,12 +163,13 @@ export default function sha256(message: string): string {
   const len = message.length;
 
   // true 64-bit message length as two 32-bit ints
-  const len64 = [(len / 0x100000000) >>> 0, len >>> 0];
+  const len64hi = (len / 0x100000000) >>> 0;
+  const len64lo = len >>> 0;
 
   const pad = message
-    + _padding.substr(0, 64 - ((len64[1] + 8) & 0x3F))
-    + int32ToStr((len64[0] << 3) | (len64[0] >>> 28))
-    + int32ToStr(len64[1] << 3);
+    + _padding.substr(0, 64 - ((len64lo + 8) & 0x3F))
+    + int32ToStr((len64hi << 3) | (len64hi >>> 28))
+    + int32ToStr(len64lo << 3);
 
   const state = update(pad);
 
