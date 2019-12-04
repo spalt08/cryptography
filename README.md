@@ -32,7 +32,9 @@ const hash = sha256('Hello World!')
 ```
 
 ## Benchmarks
-Faster than [forge](https://github.com/digitalbazaar/forge) and [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API). Benchmark is coming soon.
+Faster than [forge](https://github.com/digitalbazaar/forge), [sjcl](https://github.com/bitwiseshiftleft/sjcl) and [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) in **sequence** mode. 
+* http://jsben.ch/vBZqA
+* https://jsbench.me/i1k3b0xrvy/4
 
 ## Contributing
 Contributions are welcome! Contribution guidelines will be published later.
