@@ -1,7 +1,7 @@
 {
   "name": "@cryptography/sha256",
   "description": "https://github.com/js-cryptography/sha256",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Konstantin Darutkin",
   "scripts": {
     "prepare": "npm run build",
