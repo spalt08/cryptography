@@ -1,13 +1,19 @@
 # @cryptography/sha256
-![](https://img.shields.io/bundlephobia/minzip/@cryptography/sha256) ![](https://img.shields.io/codecov/c/github/js-cryptography/sha256?token=617017dc35344eb6b4637420457746c8) ![](https://img.shields.io/travis/js-cryptography/sha256)
+[![Bundlephobia](https://img.shields.io/bundlephobia/minzip/@cryptography/sha256)](https://bundlephobia.com/result?p=@cryptography/sha256@0.1.1)
+[![Coverage](https://img.shields.io/codecov/c/github/js-cryptography/sha256?token=617017dc35344eb6b4637420457746c8)](https://codecov.io/gh/js-cryptography/sha256)
+[![Travis CI](https://img.shields.io/travis/js-cryptography/sha256)](https://travis-ci.com/js-cryptography/sha256)
 
-Synchronous SHA-256 implementation for JavaScript
+High-performance synchronous SHA-256 implementation for JavaScript. Optimized for browsers.
 
+## Features
 * Blazing fast
-* Lightweight without any dependencies
+* Ultra lightweight
+* ECMAScript 3-6
 * Typed
+* Tested
 
 ## Setup
+[Package](https://www.npmjs.com/package/@cryptography/sha256) is available through `npm` and `yarn`
 ```
 npm install @cryptography/sha256
 ```
@@ -16,8 +22,17 @@ yarn add @cryptography/sha256
 ```
 
 ## Usage
+This package is designed to be simple and lightweight. It is exported as single synchronous function.
+
+It is highly recommended to run CPU-intensive tasks in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers).
 ```js
 import sha256 from '@cryptography/sha256'
 
-sha256('Hello World!') // returns string
+const hash = sha256('Hello World!')
 ```
+
+## Benchmarks
+Faster than [forge](https://github.com/digitalbazaar/forge) and [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API). Benchmark is coming soon.
+
+## Contributing
+Contributions are welcome! Contribution guidelines will be published later.
