@@ -43,9 +43,21 @@ let _padding = String.fromCharCode(128);
 for (let i = 0; i < 64; i += 1) _padding += String.fromCharCode(0);
 
 /**
- * Updates a SHA-256 state with the given string.
+ * Calculates sha256 hash from string
  */
-function update(data: string) {
+export default function sha256(message: string): string {
+  // 56-bit length of message so far (does not including padding)
+  let len = message.length;
+
+  // true 64-bit message length as two 32-bit ints
+  const len64hi = (len / 0x100000000) >>> 0;
+  const len64lo = len >>> 0;
+
+  const pad = message
+    + _padding.substr(0, 64 - ((len64lo + 8) & 0x3F))
+    + int32ToStr((len64hi << 3) | (len64hi >>> 28))
+    + int32ToStr(len64lo << 3);
+
   let t1; let t2; let s0; let s1; let ch; let maj;
   let a; let b; let c; let d; let e; let f; let g; let h;
   let i = 0;
@@ -63,9 +75,10 @@ function update(data: string) {
   let h7 = 0x1F83D9AB;
   let h8 = 0x5BE0CD19;
 
-  let len = data.length;
   let p = 0; let ni = 64;
   
+  len = pad.length;
+
   // While decrementing loop is much faster than for
   while (len >= 64) {
     // initialize hash value for this chunk
@@ -87,7 +100,7 @@ function update(data: string) {
       i = 63 - ni;
 
       if (i < 16) {
-        words[i] = strToInt32(data, p);
+        words[i] = strToInt32(pad, p);
         p += 4; 
       } else {
         // XOR word 2 words ago rot right 17, rot right 19, shft right 10
@@ -150,35 +163,12 @@ function update(data: string) {
     len -= 64;
   }
 
-  return {
-    h1, h2, h3, h4, h5, h6, h7, h8,
-  };
-}
-
-/**
- * Calculates sha256 hash from string
- */
-export default function sha256(message: string): string {
-  // 56-bit length of message so far (does not including padding)
-  const len = message.length;
-
-  // true 64-bit message length as two 32-bit ints
-  const len64hi = (len / 0x100000000) >>> 0;
-  const len64lo = len >>> 0;
-
-  const pad = message
-    + _padding.substr(0, 64 - ((len64lo + 8) & 0x3F))
-    + int32ToStr((len64hi << 3) | (len64hi >>> 28))
-    + int32ToStr(len64lo << 3);
-
-  const state = update(pad);
-
-  return int32ToStr(state.h1)
-    + int32ToStr(state.h2)
-    + int32ToStr(state.h3)
-    + int32ToStr(state.h4)
-    + int32ToStr(state.h5)
-    + int32ToStr(state.h6)
-    + int32ToStr(state.h7)
-    + int32ToStr(state.h8);
+  return int32ToStr(h1)
+    + int32ToStr(h2)
+    + int32ToStr(h3)
+    + int32ToStr(h4)
+    + int32ToStr(h5)
+    + int32ToStr(h6)
+    + int32ToStr(h7)
+    + int32ToStr(h8);
 }
