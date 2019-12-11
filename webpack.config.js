@@ -19,7 +19,7 @@ module.exports = (env, argv) => {
 
     output: {
       path: 'dist/umd',
-      library: 'sha512',
+      library: 'sha256',
     },
 
     optimization: {
@@ -69,7 +69,7 @@ module.exports = (env, argv) => {
       output: {
         ...commonConfig.output,
         path: path.resolve(__dirname, 'dist/umd'),
-        filename: 'sha512.min.js',
+        filename: 'sha256.min.js',
         libraryTarget: 'umd',
       },
     },
@@ -84,7 +84,7 @@ module.exports = (env, argv) => {
       output: {
         ...commonConfig.output,
         path: path.resolve(__dirname, 'dist/cjs'),
-        filename: 'sha512.min.js',
+        filename: 'sha256.min.js',
         libraryTarget: 'commonjs2',
       },
     },

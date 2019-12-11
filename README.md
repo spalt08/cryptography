@@ -1,5 +1,5 @@
 # @cryptography/sha256
-[![Bundlephobia](https://img.shields.io/bundlephobia/minzip/@cryptography/sha256)](https://bundlephobia.com/result?p=@cryptography/sha256@0.1.3)
+[![Bundlephobia](https://img.shields.io/bundlephobia/minzip/@cryptography/sha256)](https://bundlephobia.com/result?p=@cryptography/sha256@0.1.4)
 [![Coverage](https://img.shields.io/codecov/c/github/js-cryptography/sha256?token=617017dc35344eb6b4637420457746c8)](https://codecov.io/gh/js-cryptography/sha256)
 [![Travis CI](https://img.shields.io/travis/js-cryptography/sha256)](https://travis-ci.com/js-cryptography/sha256)
 
