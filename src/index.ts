@@ -43,84 +43,86 @@ let _padding = String.fromCharCode(128);
 for (let i = 0; i < 64; i += 1) _padding += String.fromCharCode(0);
 
 /**
- * Calculates sha256 hash from string
+ * Creates new sha256 state
  */
-export default function sha256(message: string): string {
-  // 56-bit length of message so far (does not including padding)
-  let len = message.length;
-
-  // true 64-bit message length as two 32-bit ints
-  const len64hi = (len / 0x100000000) >>> 0;
-  const len64lo = len >>> 0;
-
-  const pad = message
-    + _padding.substr(0, 64 - ((len64lo + 8) & 0x3F))
-    + int32ToStr((len64hi << 3) | (len64hi >>> 28))
-    + int32ToStr(len64lo << 3);
-
-  let t1; let t2; let s0; let s1; let ch; let maj;
-  let a; let b; let c; let d; let e; let f; let g; let h;
-  let i = 0;
-
-  // Array to use to store words.
-  const words = new Uint32Array(64);
+function init(): Uint32Array {
+  const h = new Uint32Array(8);
 
   // SHA-256 state contains eight 32-bit integers
-  let h1 = 0x6A09E667;
-  let h2 = 0xBB67AE85;
-  let h3 = 0x3C6EF372;
-  let h4 = 0xA54FF53A;
-  let h5 = 0x510E527F;
-  let h6 = 0x9B05688C;
-  let h7 = 0x1F83D9AB;
-  let h8 = 0x5BE0CD19;
+  h[0] = 0x6A09E667;
+  h[1] = 0xBB67AE85;
+  h[2] = 0x3C6EF372;
+  h[3] = 0xA54FF53A;
+  h[4] = 0x510E527F;
+  h[5] = 0x9B05688C;
+  h[6] = 0x1F83D9AB;
+  h[7] = 0x5BE0CD19;
 
-  let p = 0; let ni = 64;
-  
-  len = pad.length;
+  return h;
+}
+
+// Array to use to store words.
+const words = new Uint32Array(64);
+
+/**
+ * Updates sha512 state
+ */
+function update(state: Uint32Array, data: string): string;
+function update(state: Uint32Array, data: Uint32Array): Uint32Array;
+function update(state: Uint32Array, data: string | Uint32Array) {
+  let t1; let t2; let s0; let s1; let ch; let maj;
+  let a; let b; let c; let d; let e; let f; let g; let h;
+
+  let i = 0;
+  let len = 0;
+  let selector;
+
+  if (typeof data === 'string') {
+    len = data.length;
+    selector = (dt: string, ix: number): number => strToInt32(dt, ix * 4);
+
+    data.substr(0, 1);
+  } else {
+    len = data.length * 4;
+    selector = (dt: Uint32Array, ix: number): number => dt[ix];
+  }
 
   // While decrementing loop is much faster than for
   while (len >= 64) {
     // initialize hash value for this chunk
     // [a, b, c, d, e, f, g, h] = nextState;
-    a = h1;
-    b = h2;
-    c = h3;
-    d = h4;
-    e = h5;
-    f = h6;
-    g = h7;
-    h = h8;
+    a = state[0];
+    b = state[1];
+    c = state[2];
+    d = state[3];
+    e = state[4];
+    f = state[5];
+    g = state[6];
+    h = state[7];
 
-    ni = 64; i = 0;
-  
-    // the w array will be populated with sixteen 32-bit big-endian words
-    // and then extended into 64 32-bit words according to SHA-256
-    while (ni--) {
-      i = 63 - ni;
+    for (i = 0; i < 16; i += 1) {
+      words[i] = selector(data as any, i);
+    }
 
-      if (i < 16) {
-        words[i] = strToInt32(pad, p);
-        p += 4; 
-      } else {
-        // XOR word 2 words ago rot right 17, rot right 19, shft right 10
-        t1 = words[i - 2];
-        t1 = ((t1 >>> 17) | (t1 << 15))
-          ^ ((t1 >>> 19) | (t1 << 13))
-          ^ (t1 >>> 10);
+    for (; i < 64; i += 1) {
+      // XOR word 2 words ago rot right 17, rot right 19, shft right 10
+      t1 = words[i - 2];
+      t1 = ((t1 >>> 17) | (t1 << 15))
+        ^ ((t1 >>> 19) | (t1 << 13))
+        ^ (t1 >>> 10);
 
-        // XOR word 15 words ago rot right 7, rot right 18, shft right 3
-        t2 = words[i - 15];
-        t2 = ((t2 >>> 7) | (t2 << 25))
-          ^ ((t2 >>> 18) | (t2 << 14))
-          ^ (t2 >>> 3);
+      // XOR word 15 words ago rot right 7, rot right 18, shft right 3
+      t2 = words[i - 15];
+      t2 = ((t2 >>> 7) | (t2 << 25))
+        ^ ((t2 >>> 18) | (t2 << 14))
+        ^ (t2 >>> 3);
 
-        // sum(t1, word 7 ago, t2, word 16 ago) modulo 2^32
-        words[i] = (t1 + words[i - 7] + t2 + words[i - 16]);
-      }
+      // sum(t1, word 7 ago, t2, word 16 ago) modulo 2^32
+      words[i] = (t1 + words[i - 7] + t2 + words[i - 16]);
+    }
 
-      // Round Function 
-
+    // Round Function
+    for (i = 0; i < 64; i += 1) {
       // Sum1(e)
       s1 = ((e >>> 6) | (e << 26))
         ^ ((e >>> 11) | (e << 21))
@@ -150,25 +152,124 @@ export default function sha256(message: string): string {
       a = (t1 + t2) | 0;
     }
 
-    // update hash state  
-    h1 = (h1 + a) | 0;
-    h2 = (h2 + b) | 0;
-    h3 = (h3 + c) | 0;
-    h4 = (h4 + d) | 0;
-    h5 = (h5 + e) | 0;
-    h6 = (h6 + f) | 0;
-    h7 = (h7 + g) | 0;
-    h8 = (h8 + h) | 0;
+    // update hash state
+    state[0] += a;
+    state[1] += b;
+    state[2] += c;
+    state[3] += d;
+    state[4] += e;
+    state[5] += f;
+    state[6] += g;
+    state[7] += h;
 
     len -= 64;
+    if (typeof data === 'string') data = data.slice(64);
   }
 
-  return int32ToStr(h1)
-    + int32ToStr(h2)
-    + int32ToStr(h3)
-    + int32ToStr(h4)
-    + int32ToStr(h5)
-    + int32ToStr(h6)
-    + int32ToStr(h7)
-    + int32ToStr(h8);
+  return data;
 }
+
+/**
+ * Adds padding to message and updates sha512 state
+ */
+function finalize(h: Uint32Array, data: string, len: number = data.length) {
+  // true 64-bit message length as two 32-bit ints
+  const len64hi = (len / 0x100000000) >>> 0;
+  const len64lo = len >>> 0;
+
+  const pad = data
+    + _padding.substr(0, 64 - ((len64lo + 8) & 0x3F))
+    + int32ToStr((len64hi << 3) | (len64hi >>> 28))
+    + int32ToStr(len64lo << 3);
+
+  update(h, pad);
+}
+
+/**
+ * Convert sha256 state to string
+ */
+function stateToStr(h: Uint32Array): string {
+  return int32ToStr(h[0])
+  + int32ToStr(h[1])
+  + int32ToStr(h[2])
+  + int32ToStr(h[3])
+  + int32ToStr(h[4])
+  + int32ToStr(h[5])
+  + int32ToStr(h[6])
+  + int32ToStr(h[7]);
+}
+
+
+/**
+ * Calculates sha256 hash from string
+ */
+function sha256(message: string): string;
+function sha256(message: string, out: 'array'): Uint32Array;
+function sha256(message: string, out?: string): string | Uint32Array {
+  const h = init();
+  finalize(h, message);
+
+  if (out === 'array') {
+    return h;
+  }
+
+  return stateToStr(h);
+}
+
+interface StreamInterface {
+  data: string;
+  length: number;
+  state: Uint32Array;
+  update(data: string | Uint32Array): StreamInterface;
+  digest(): string;
+  digest(format: 'array'): Uint32Array;
+}
+
+interface StreamConstructor {
+  new (): StreamInterface;
+}
+
+/**
+ * Creates stream object
+ */
+const CreateStream = function (this: StreamInterface): StreamInterface {
+  this.data = '';
+  this.length = 0;
+  this.state = init();
+
+  this.update = function (data: string | Uint32Array) {
+    if (typeof data === 'string') {
+      this.length += data.length;
+      this.data = update(this.state, this.data + data);
+    } else {
+      this.length += data.length * 4;
+      update(this.state, data);
+    }
+
+    return this;
+  };
+
+  this.digest = function (format?: string): any {
+    finalize(this.state, this.data, this.length);
+
+    if (format === 'array') {
+      return this.state;
+    }
+
+    return stateToStr(this.state);
+  };
+
+  return this;
+} as any as StreamConstructor;
+
+/**
+ * Stream hashing mode
+ */
+sha256.stream = function (): StreamInterface {
+  return new CreateStream();
+};
+
+sha256.blockLength = 64;
+sha256.digestLength = 32;
+
+export default sha256;
