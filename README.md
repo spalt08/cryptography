@@ -38,7 +38,7 @@ sha256.stream().update('Hello World!').digest();
 
 ## Benchmarks
 Faster than [forge](https://github.com/digitalbazaar/forge), [sjcl](https://github.com/bitwiseshiftleft/sjcl) and [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) in **sequence** mode. 
-* http://jsben.ch/vBZqA
+* http://jsben.ch/Um0Uc
 * https://jsbench.me/i1k3b0xrvy/4
 
 ## Contributing
