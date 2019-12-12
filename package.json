@@ -12,7 +12,7 @@
     "minify": "uglifyjs --compress --mangle --output ./dist/index.min.js -- ./dist/index.js"
   },
   "publishConfig": {
-    "access": "public",
+    "access": "public"
   },
   "dependencies": {},
   "devDependencies": {
