@@ -39,8 +39,8 @@ sha256.stream().update('Hello World!').digest();
 * Hashing small inputs (< 5kb)
 * Key derivation functions
 
-### When you should not use this
-* Hashing large files
+### ⚠️ When you should not use this (WebCrypto API preferred cases)
+* Hashing files (> 5kb)
 * Concurrent hashing large amount of messages
 
 ## Benchmarks
