@@ -35,15 +35,24 @@ For hashing large files or other data chuncks use `stream()` to create a hashing
 ```js
 sha256.stream().update('Hello World!').digest();
 ```
+### When you should use @cryptography/sha256
+* Hashing small inputs (< 5kb)
+* Key derivation functions
+
+### When you should not use this
+* Hashing large files
+* Concurrent hashing large amount of messages
 
 ## Benchmarks
 Faster than [forge](https://github.com/digitalbazaar/forge), [sjcl](https://github.com/bitwiseshiftleft/sjcl) and [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) in **sequence** mode. 
 
 ### 2x faster at desktop browsers (benchmarked with Macbook Pro 2016)
 ![Macbook 2016 perfromance](/files/perf_macbook.png)
+Displays hashes/sec at 128 byte input message
 
 ### 4x faster at mobile browsers (benchmarked with iPhone 6S 13.2)
 ![iPhone 6S perfromance](/files/perf_iphone.png)
+Displays hashes/sec at 128 byte input message
 
 ### Try yourself
 * http://jsben.ch/Um0Uc
