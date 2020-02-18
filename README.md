@@ -38,6 +38,7 @@ sha256.stream().update('Hello World!').digest();
 ### When you should use @cryptography/sha256
 * Hashing small inputs (< 5kb)
 * Key derivation functions
+* 100% browser support required
 
 ### ⚠️ When you should not use this (WebCrypto API preferred cases)
 * Hashing files (> 5kb)
