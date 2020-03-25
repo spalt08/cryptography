@@ -3,7 +3,7 @@
 High-performance cryptographic packages for JavaScript. Optimized for browsers.
 
 ## Packages & Documentation
-* [@cryptography/sha256](./packages/sha256)
+* [[@cryptography/sha256](./packages/sha256)] SHA-256 implementation for JavaScript
 
 ## Contribution
 
