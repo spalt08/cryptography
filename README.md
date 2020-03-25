@@ -1,0 +1,17 @@
+# Cryptography JS
+
+High-performance cryptographic packages for JavaScript. Optimized for browsers.
+
+## Packages & Documentation
+* [@cryptography/sha256](./packages/sha256)
+
+## Contribution
+
+As this project is a monorepo it is extremely important to write correct commit messages and keep git history clean. All commits made in this repository are divided in two groups: core commits (those that are only related to core repository and are not related to any package) and package commits (those that are related to particular package). Examples of core commit contents: update this readme, update lerna configuration, update scripts in core package.json. Examples of package commits: update eslint configuration in @cryptography/eslint-config package, fix issues in @cryptography/sha256 package.
+
+When writing commit message start with `[core]` prefix if it is a core commit and with `[@cryptography/package-name]` prefix if it is a package commit. After prefix write commit message as you usually do. For example,
+
+- `[core] feat: git commits documentation to readme`
+- `[core] feat: @cryptography/sha256 publishing script`
+- `[@cryptography/eslint-config] fix: rules to work with prettier`
+- `[@cryptography/sha256] feat: stream hashing`
