@@ -28,8 +28,18 @@ Also, it is highly recommended to run CPU-intensive tasks in a [Web Worker](http
 ```js
 import sha256 from '@cryptography/sha256'
 
-const hash = sha256('Hello World!')
-const bytes = sha256('Hello World!', 'array')
+// as Uint32Array([0xa8d627d9, 0x3f518e90, 0x96b6f40e, 0x36d27b76, 0x60fa26d3, 0x18ef1adc, 0x43da750e, 0x49ebe4be])
+const array = sha256('Hello World!') 
+
+// as hex-string: "a8d627d93f518e9096b6f40e36d27b7660fa26d318ef1adc43da750e49ebe4be"
+const hex = sha256('Hello World!', 'hex')
+
+// as binary string: "ÄïükYoUH½LÛ,Zß\nNÆêE©¡`M¢"
+const raw = sha256('Hello World!', 'binary')
+
+// UInt32Array as input
+const buf = new Uint32Array([0xa8d627d9, 0x3f518e90, 0x96b6f40e, 0x36d27b76, 0x60fa26d3, 0x18ef1adc, 0x43da750e, 0x49ebe4be]);
+sha256(buf)
 ```
 For hashing large files or other data chuncks use `stream()` to create a hashing stream.
 ```js
@@ -40,10 +50,10 @@ sha256.stream().update('Hello World!').digest();
 Faster than [forge](https://github.com/digitalbazaar/forge), [sjcl](https://github.com/bitwiseshiftleft/sjcl) and [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) in **sequence** mode. 
 
 ### 2x faster at desktop browsers (benchmarked with Macbook Pro 2016)
-![Macbook 2016 perfromance](/files/perf_macbook.png)
+![Macbook 2016 perfromance](./files/perf_macbook.png)
 
 ### 4x faster at mobile browsers (benchmarked with iPhone 6S 13.2)
-![iPhone 6S perfromance](/files/perf_iphone.png)
+![iPhone 6S perfromance](./files/perf_iphone.png)
 
 ### Try yourself
 * http://jsben.ch/Um0Uc
