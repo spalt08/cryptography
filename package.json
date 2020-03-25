@@ -1,45 +1,20 @@
 {
-  "name": "@cryptography/sha256",
-  "description": "https://github.com/js-cryptography/sha256",
-  "version": "0.1.4",
-  "author": "Konstantin Darutkin",
+  "name": "cryptography",
+  "description": "A monorepo for @cryptography packages",
+  "author": "Konstantin Darutkin <kdarutkin@gmail.com>",
   "scripts": {
-    "prepare": "npm run build",
-    "lint": "eslint --ext .ts ./src",
-    "build": "rm -rf dist/* && webpack --mode=production",
-    "analyze": "npm run build -- --analyze",
-    "test": "jest --coverage",
-    "minify": "uglifyjs --compress --mangle --output ./dist/index.min.js -- ./dist/index.js"
+    "build:sha256": "cd packages/sha256 && yarn build",
+    "test:sha256": "cd packages/sha256 && yarn test",
+    "lint:sha256": "eslint --ext ts ./packages/sha256/src"
   },
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {},
-  "devDependencies": {
-    "@types/jest": "^24.0.23",
-    "@typescript-eslint/eslint-plugin": "^2.6.1",
-    "@typescript-eslint/parser": "^2.6.1",
-    "codecov": "^3.6.1",
-    "eslint": "^6.7.2",
-    "eslint-config-airbnb-typescript": "^6.0.0",
-    "eslint-import-resolver-webpack": "^0.11.1",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^23.0.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.17.0",
-    "eslit": "^6.0.0",
-    "jest": "^24.9.0",
-    "terser-webpack-plugin": "^2.2.3",
-    "ts-jest": "^24.2.0",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.7.2",
-    "uglify-js": "^3.7.1",
-    "webpack": "^5.0.0-beta.9",
-    "webpack-bundle-analyzer": "^3.6.0",
-    "webpack-cli": "^3.3.9"
+  "dependencies": {
+    "global": "^4.4.0",
+    "lerna": "^3.20.2"
   },
-  "main": "dist/cjs/sha256.min.js",
-  "types": "dist/index.d.ts",
+  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/js-cryptography/sha256.git"
@@ -49,21 +24,11 @@
       "eslint"
     ]
   },
-  "keywords": [
-    "sha256",
-    "javascript",
-    "crypto"
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "configurations/*"
   ],
-  "bugs": {
-    "url": "https://github.com/js-cryptography/sha256/issues"
-  },
   "homepage": "https://github.com/js-cryptography/sha256#readme",
-  "files": [
-    "dist/*",
-    "package.json"
-  ],
-  "directories": {
-    "test": "tests"
-  },
   "license": "GPL-3.0-or-later"
 }

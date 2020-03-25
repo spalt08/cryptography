@@ -1,25 +1,26 @@
-const path = require('path');
+/* eslint-disable import/no-extraneous-dependencies */
 const TerserPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const sourceDirectory = 'src';
-
-module.exports = (env, argv) => {
-  const { analyze } = argv;
+module.exports = function getPackageConfig({
+  entry,
+  libraryName,
+  sourceDirectory,
+  distDirectory,
+  externals = {},
+  plugins = [],
+  analyze = false,
+}) {
   const commonConfig = {
-    entry: './src/index',
-
+    entry,
     mode: 'production',
-
     devtool: undefined,
-
-    plugins: [],
-
-    externals: {},
+    plugins,
+    externals,
 
     output: {
-      path: 'dist/umd',
-      library: 'sha256',
+      path: `${distDirectory}/umd`,
+      library: libraryName,
     },
 
     optimization: {
@@ -68,8 +69,8 @@ module.exports = (env, argv) => {
 
       output: {
         ...commonConfig.output,
-        path: path.resolve(__dirname, 'dist/umd'),
-        filename: 'sha256.min.js',
+        path: `${distDirectory}/umd`,
+        filename: `${libraryName}.min.js`,
         libraryTarget: 'umd',
       },
     },
@@ -83,8 +84,8 @@ module.exports = (env, argv) => {
 
       output: {
         ...commonConfig.output,
-        path: path.resolve(__dirname, 'dist/cjs'),
-        filename: 'sha256.min.js',
+        path: `${distDirectory}/cjs`,
+        filename: `${libraryName}.min.js`,
         libraryTarget: 'commonjs2',
       },
     },
