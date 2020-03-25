@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
