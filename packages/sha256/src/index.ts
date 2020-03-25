@@ -1,3 +1,5 @@
+import { s2i, i2s, i2h } from '../../utils/converters';
+
 /**
  * Creates new SHA-256 state
  */
@@ -16,7 +18,6 @@ function init(): Uint32Array {
 
   return h;
 }
-
 
 /** Array to use to store round words. */
 const words = new Uint32Array(64);
@@ -122,96 +123,113 @@ function round(state: Uint32Array, data: Uint32Array) {
 }
 
 /**
- * Gets a uint32 from string in big-endian order order
- */
-function strToInt32(str: string, pos: number) {
-  return (
-    str.charCodeAt(pos) << 24
-    ^ str.charCodeAt(pos + 1) << 16
-    ^ str.charCodeAt(pos + 2) << 8
-    ^ str.charCodeAt(pos + 3)
-  );
-}
-
-/**
- * Returns a uint32 as a string in big-endian order order
- */
-function int32ToStr(data: number) {
-  return (
-    String.fromCharCode((data >> 24) & 0xFF)
-    + String.fromCharCode((data >> 16) & 0xFF)
-    + String.fromCharCode((data >> 8) & 0xFF)
-    + String.fromCharCode(data & 0xFF)
-  );
-}
-
-/**
  * Pre-processing round buffer for string input
  */
-function prepare(str: string, buf: Uint32Array, offset: number = 0) {
-  for (i = offset; i < 16; i++) buf[i] = strToInt32(str, i * 4);
-  return str.slice(64 - offset * 4);
+function preprocess(str: string, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
+  while (str.length > 64) {
+    for (i = offset; i < 16; i++) buf[i] = s2i(str, i * 4);
+    str = str.slice(64 - offset * 4);
+    offset = 0;
+
+    round(state, buf);
+  }
+
+  return str;
 }
 
-// padding
-let _padstr = String.fromCharCode(128);
-for (i = 0; i < 64; i += 1) _padstr += String.fromCharCode(0);
+/**
+ * Process input buffer
+ */
+function process(input: Uint32Array, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
+  while (input.length >= buf.length - offset) {
+    buf.set(input.subarray(0, buf.length - offset), offset);
+    input = input.subarray(buf.length - offset);
+    offset = 0;
+
+    round(state, buf);
+  }
+
+  if (input.length > 0) {
+    buf.set(input, offset);
+    offset += input.length;
+  }
+
+  return offset;
+}
+
+/**
+ * Repeatable part
+ */
+function finish(len: number, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
+  const len64hi = (len / 0x100000000) >>> 0;
+  const len64lo = len >>> 0;
+
+  for (i = offset + 1; i < buf.length; i++) buf[i] = 0;
+
+  if (offset >= 14) {
+    round(state, buf);
+    for (i = 0; i < buf.length; i++) buf[i] = 0;
+  }
+
+  buf[14] = (len64hi << 3) | (len64hi >>> 28);
+  buf[15] = len64lo << 3;
+
+  round(state, buf);
+}
 
 /**
  * Adds padding to message
  */
-function padstring(len: number) {
-  // true 64-bit message length as two 32-bit ints
-  const len64hi = (len / 0x100000000) >>> 0;
-  const len64lo = len >>> 0;
+function finalizestr(chunk: string, len: number, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
+  for (; chunk.length >= 4; offset++) {
+    buf[offset] = s2i(chunk, 0);
+    chunk = chunk.slice(4);
+  }
 
-  return (
-    _padstr.substr(0, 64 - ((len64lo + 8) & 0x3F))
-    + int32ToStr((len64hi << 3) | (len64hi >>> 28))
-    + int32ToStr(len64lo << 3)
-  );
+  if (offset >= 16) {
+    round(state, buf);
+    offset = 0;
+  }
+
+  buf[offset] = s2i(`${chunk}\x80\x00\x00\x00`, 0);
+  finish(len, buf, state, offset);
 }
 
 /**
  * Adds padding to buffer
  */
-function padbuffer(buf: Uint32Array, len: number, offset = 0) {
-  // true 64-bit message length as two 32-bit ints
-  const len64hi = (len / 0x100000000) >>> 0;
-  const len64lo = len >>> 0;
-
+function finalize(len: number, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
   buf[offset] = 0x80000000;
-
-  for (i = offset + 1; i < 14; i++) buf[i] = 0;
-
-  buf[14] = (len64hi << 3) | (len64hi >>> 28);
-  buf[15] = len64lo << 3;
+  finish(len, buf, state, offset);
 }
 
+/**
+ * Output depending on format
+ */
 function out(state: Uint32Array, format: 'array'): Uint32Array;
 function out(state: Uint32Array, format: 'hex' | 'binary'): string;
 function out(state: Uint32Array, format: any = 'array') {
   switch (format) {
     case 'hex': return (
-      `00000000${state[0].toString(16)}`.slice(-8)
-    + `00000000${state[1].toString(16)}`.slice(-8)
-    + `00000000${state[2].toString(16)}`.slice(-8)
-    + `00000000${state[3].toString(16)}`.slice(-8)
-    + `00000000${state[4].toString(16)}`.slice(-8)
-    + `00000000${state[5].toString(16)}`.slice(-8)
-    + `00000000${state[6].toString(16)}`.slice(-8)
-    + `00000000${state[7].toString(16)}`.slice(-8)
+      i2h(state[0])
+    + i2h(state[1])
+    + i2h(state[2])
+    + i2h(state[3])
+    + i2h(state[4])
+    + i2h(state[5])
+    + i2h(state[6])
+    + i2h(state[7])
     );
 
     case 'binary': return (
-      int32ToStr(state[0])
-    + int32ToStr(state[1])
-    + int32ToStr(state[2])
-    + int32ToStr(state[3])
-    + int32ToStr(state[4])
-    + int32ToStr(state[5])
-    + int32ToStr(state[6])
-    + int32ToStr(state[7])
+      i2s(state[0])
+    + i2s(state[1])
+    + i2s(state[2])
+    + i2s(state[3])
+    + i2s(state[4])
+    + i2s(state[5])
+    + i2s(state[6])
+    + i2s(state[7])
     );
 
     default: return state;
@@ -220,7 +238,7 @@ function out(state: Uint32Array, format: any = 'array') {
 /**
  * Stream handler for hashing
  */
-class Stream implements StreamInterface {
+class Stream {
   buffer: Uint32Array;
   state: Uint32Array;
   length: number;
@@ -235,34 +253,16 @@ class Stream implements StreamInterface {
     this.tail = '';
   }
 
-  update(chunk: string | Uint32Array): StreamInterface {
+  update(chunk: string | Uint32Array) {
     if (typeof chunk === 'string') {
       this.length += chunk.length;
-
-      if (this.tail.length > 0) chunk = this.tail + chunk;
-      while (chunk.length > 64) {
-        chunk = prepare(chunk, this.buffer, this.offset);
-        round(this.state, this.buffer);
-        this.offset = 0;
-      }
-
-      this.tail = chunk;
+      this.tail = preprocess(this.tail + chunk, this.buffer, this.state, this.offset);
+      this.offset = 0;
     } else {
       if (this.tail.length > 0) throw new Error('Unable to update hash-stream with array');
 
       this.length += chunk.length * 4;
-
-      while (chunk.length >= this.buffer.length) {
-        this.buffer.set(chunk, this.offset);
-        round(this.state, this.buffer);
-        chunk = chunk.subarray(this.buffer.length - this.offset);
-        this.offset = 0;
-      }
-
-      if (chunk.length > 0) {
-        this.buffer.set(chunk);
-        this.offset = chunk.length;
-      }
+      this.offset = process(chunk, this.buffer, this.state, this.offset);
     }
 
     return this;
@@ -272,18 +272,19 @@ class Stream implements StreamInterface {
   digest(format: 'hex' | 'binary'): string;
   digest(format: any = 'array'): any {
     if (this.tail.length > 0) {
-      let final = this.tail + padstring(this.length);
-      while (final.length > 0) {
-        final = prepare(final, this.buffer, this.offset);
-        round(this.state, this.buffer);
-        this.offset = 0;
-      }
+      finalizestr(this.tail, this.length, this.buffer, this.state, this.offset);
     } else {
-      padbuffer(this.buffer, this.length, this.offset);
-      round(this.state, this.buffer);
+      finalize(this.length, this.buffer, this.state, this.offset);
     }
 
     return out(this.state, format);
+  }
+
+  clear() {
+    this.state = init();
+    this.length = 0;
+    this.offset = 0;
+    this.tail = '';
   }
 }
 
@@ -296,27 +297,8 @@ function sha256(message: string | Uint32Array, format: any = 'array'): string | 
   const buf = new Uint32Array(16);
   const state = init();
 
-  if (typeof message === 'string') {
-    let data = message + padstring(message.length);
-
-    while (data.length > 0) {
-      data = prepare(data, buf);
-      round(state, buf);
-    }
-  } else {
-    const len = message.length * 4;
-    let data = message;
-
-    while (data.length >= buf.length) {
-      buf.set(data);
-      round(state, buf);
-      data = data.subarray(buf.length);
-    }
-
-    buf.set(data);
-    padbuffer(buf, len);
-    round(state, buf);
-  }
+  if (typeof message === 'string') finalizestr(preprocess(message, buf, state), message.length, buf, state);
+  else finalize(message.length * 4, buf, state, process(message, buf, state));
 
   return out(state, format);
 }

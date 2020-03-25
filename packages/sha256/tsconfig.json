@@ -7,13 +7,13 @@
     "noUnusedParameters": true,
     "importHelpers": false,
     "target": "es5",
-    "baseUrl": "./src",
-    "module": "commonjs",
-    "outDir": "./dist",
+    "module": "system",
+    "outFile": "./dist/index.js",
     "declaration": true,
     "moduleResolution": "node",
     "sourceMap": false,
     "esModuleInterop": true,
+    "baseUrl": "./src",
   },
   "include": [
     "src/*"
