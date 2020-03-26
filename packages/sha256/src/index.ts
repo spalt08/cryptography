@@ -1,4 +1,4 @@
-import { s2i, i2s, i2h } from '../../utils/converters';
+import { s2i, i2s, i2h } from '@cryptography/utils';
 
 /**
  * Creates new SHA-256 state
@@ -126,7 +126,7 @@ function round(state: Uint32Array, data: Uint32Array) {
  * Pre-processing round buffer for string input
  */
 function preprocess(str: string, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
-  while (str.length > 64) {
+  while (str.length >= 64) {
     for (i = offset; i < 16; i++) buf[i] = s2i(str, i * 4);
     str = str.slice(64 - offset * 4);
     offset = 0;
@@ -307,5 +307,7 @@ function sha256(message: string | Uint32Array, format: any = 'array'): string | 
  * Hash with stream constructor
  */
 sha256.stream = () => new Stream();
+sha256.blockLength = 64;
+sha256.digestLength = 32;
 
 export default sha256;

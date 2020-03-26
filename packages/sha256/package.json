@@ -4,30 +4,23 @@
   "version": "0.1.4",
   "author": "Konstantin Darutkin",
   "scripts": {
-    "prepare": "npm run build",
-    "lint": "eslint --ext .ts ./src",
-    "build": "rm -rf dist/* && webpack --mode=production",
-    "analyze": "npm run build -- --analyze",
     "test": "jest --coverage",
-    "minify": "uglifyjs --compress --mangle --output ./dist/index.min.js -- ./dist/index.js"
+    "build": "rm -rf dist/* && rollup -c",
+    "analyze": "npm run build -- --analyze"
+  },
+  "devDependencies": {
+    "@cryptography/utils": "^1.0.0"
+  },
+  "main": "dist/cjs/sha256.min.js",
+  "module": "dist/es/sha256.js",
+  "types": "dist/typings/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-cryptography/sha256.git",
+    "directory": "packages/sha256"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "@types/jest": "^24.0.23",
-    "codecov": "^3.6.1",
-    "jest": "^24.9.0",
-    "ts-jest": "^24.2.0",
-    "typescript": "^3.7.2",
-    "@cryptography/webpack-config": "^1.0.0"
-  },
-  "main": "dist/cjs/sha256.min.js",
-  "types": "dist/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/js-cryptography/sha256.git"
   },
   "lint-staged": {
     "*.{ts}": [
@@ -47,8 +40,5 @@
     "dist/*",
     "package.json"
   ],
-  "directories": {
-    "test": "tests"
-  },
   "license": "GPL-3.0-or-later"
 }
