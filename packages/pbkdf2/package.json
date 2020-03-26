@@ -1,0 +1,47 @@
+{
+  "name": "@cryptography/pbkdf2",
+  "description": "https://github.com/js-cryptography/sha256",
+  "version": "0.1.0",
+  "author": "Konstantin Darutkin",
+  "scripts": {
+    "test": "jest --coverage",
+    "build": "rm -rf dist/* && rollup -c",
+    "analyze": "npm run build -- --analyze"
+  },
+  "dependencies": {
+    "@cryptography/hmac": "^0.1.0"
+  },
+  "devDependencies": {
+    "@cryptography/sha512": "^0.1.0"
+  },
+  "main": "dist/cjs/pbkdf2.min.js",
+  "module": "dist/es/pbkdf2.js",
+  "types": "dist/typings/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-cryptography/sha256.git",
+    "directory": "packages/pbkdf2"
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "eslint"
+    ]
+  },
+  "keywords": [
+    "pbkdf2",
+    "javascript",
+    "crypto"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/js-cryptography/sha256/issues"
+  },
+  "homepage": "https://github.com/js-cryptography/sha256#readme",
+  "files": [
+    "dist/*",
+    "package.json"
+  ],
+  "license": "GPL-3.0-or-later"
+}
