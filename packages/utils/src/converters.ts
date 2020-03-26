@@ -1,4 +1,3 @@
-
 /**
  * Gets a uint32 from string in big-endian order order
  */
