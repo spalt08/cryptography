@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['@cryptography/eslint-config'],
+  extends: ['./scripts/eslint.config.js'],
   settings: {
     'import/resolver': {
       webpack: {},

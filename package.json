@@ -1,34 +1,40 @@
 {
-  "name": "cryptography",
-  "description": "A monorepo for @cryptography packages",
-  "author": "Konstantin Darutkin <kdarutkin@gmail.com>",
-  "scripts": {
-    "build:sha256": "cd packages/sha256 && yarn build",
-    "test:sha256": "cd packages/sha256 && yarn test",
-    "lint:sha256": "eslint --ext ts ./packages/sha256/src"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "dependencies": {
-    "global": "^4.4.0",
-    "lerna": "^3.20.2"
-  },
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/js-cryptography/sha256.git"
-  },
-  "lint-staged": {
-    "*.{ts}": [
-      "eslint"
-    ]
-  },
   "private": true,
   "workspaces": [
-    "packages/*",
-    "configurations/*"
+    "packages/*"
   ],
-  "homepage": "https://github.com/js-cryptography/sha256#readme",
-  "license": "GPL-3.0-or-later"
+  "scripts": {
+    "build:utils": "cd packages/utils && yarn build",
+    "build:sha256": "yarn build:utils && cd packages/sha256 && yarn build",
+    "build:sha512": "yarn build:utils && cd packages/sha512 && yarn build",
+    "build:hmac": "cd packages/hmac && yarn build",
+    "build:pbkdf2": "cd packages/pbkdf2 && yarn build",
+    "lint:utils": "eslint --ext ts ./packages/utils/src",
+    "lint:sha256": "eslint --ext ts ./packages/sha256/src",
+    "lint:hmac": "eslint --ext ts ./packages/hmac/src",
+    "test:sha256": "cd packages/sha256 && yarn test",
+    "test:sha512": "cd packages/sha512 && yarn test",
+    "test:hmac": "cd packages/hmac && yarn test",
+    "test:pbkdf2": "cd packages/pbkdf2 && yarn test"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^4.0.0",
+    "@types/jest": "^25.1.4",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-typescript": "^6.0.0",
+    "eslint-import-resolver-webpack": "^0.11.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.0.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.17.0",
+    "jest": "^25.2.3",
+    "jest-config": "^25.2.3",
+    "rollup": "^2.2.0",
+    "rollup-plugin-terser": "^5.3.0",
+    "ts-jest": "^25.2.1",
+    "tslib": "^1.11.1",
+    "typescript": "^3.8.3"
+  }
 }
