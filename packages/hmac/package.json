@@ -1,0 +1,45 @@
+{
+  "name": "@cryptography/hmac",
+  "description": "https://github.com/js-cryptography/sha256",
+  "version": "0.1.0",
+  "author": "Konstantin Darutkin",
+  "scripts": {
+    "build": "rm -rf dist/* && rollup -c",
+    "analyze": "npm run build -- --analyze",
+    "test": "jest --coverage"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@cryptography/sha256": "^0.1.4"
+  },
+  "main": "dist/cjs/hmac.min.js",
+  "module": "dist/es/hmac.js",
+  "types": "dist/typings/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-cryptography/sha256.git",
+    "directory": "packages/hmac"
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "eslint"
+    ]
+  },
+  "keywords": [
+    "hmac",
+    "javascript",
+    "crypto"
+  ],
+  "bugs": {
+    "url": "https://github.com/js-cryptography/sha256/issues"
+  },
+  "homepage": "https://github.com/js-cryptography/sha256#readme",
+  "files": [
+    "dist/*",
+    "package.json"
+  ],
+  "license": "GPL-3.0-or-later"
+}
