@@ -1,12 +1,15 @@
 {
   "name": "@cryptography/sha256",
-  "description": "https://github.com/js-cryptography/sha256",
-  "version": "0.1.4",
+  "description": "High-performance synchronous SHA-256 implementation for JavaScript",
+  "version": "0.2.0",
   "author": "Konstantin Darutkin",
   "scripts": {
     "test": "jest --coverage",
     "build": "rm -rf dist/* && rollup -c",
-    "analyze": "npm run build -- --analyze"
+    "analyze": "npm run build -- --analyze",
+    "prepublish": "npm test",
+    "pretest": "npm run build",
+    "publish": "npm publish"
   },
   "devDependencies": {
     "@cryptography/utils": "^1.0.0"
@@ -16,7 +19,7 @@
   "types": "dist/typings/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/js-cryptography/sha256.git",
+    "url": "git+https://github.com/spalt08/cryptography.git",
     "directory": "packages/sha256"
   },
   "publishConfig": {
@@ -33,9 +36,9 @@
     "crypto"
   ],
   "bugs": {
-    "url": "https://github.com/js-cryptography/sha256/issues"
+    "url": "https://github.com/spalt08/cryptography/issues"
   },
-  "homepage": "https://github.com/js-cryptography/sha256#readme",
+  "homepage": "https://github.com/spalt08/cryptography#readme",
   "files": [
     "dist/*",
     "package.json"
