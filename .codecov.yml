@@ -11,7 +11,7 @@ coverage:
 flags:
   sha256:
     paths:
-      - packages/sha256
+      - packages/sha256/src
   sha512:
     paths:
       - packages/sha512
