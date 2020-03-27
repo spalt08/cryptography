@@ -13,3 +13,5 @@ before_script:
   - yarn run lerna run build --scope @cryptography/hmac
 script:
   - yarn run lerna run prepublish
+after_success:
+  - codecov
