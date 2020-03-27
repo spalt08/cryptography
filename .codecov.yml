@@ -2,13 +2,12 @@ comment: off
 
 coverage:
   status:
+    patch:
+      default:
+        target: 80%
     project:
-      patch:
-        default:
-          target: 80%
-      project:
-        default:
-          target: auto
+      default:
+        target: auto
 flags:
   sha256:
     paths:
