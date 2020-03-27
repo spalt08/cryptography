@@ -17,8 +17,8 @@
     "test:hmac": "cd packages/hmac && yarn test",
     "test:pbkdf2": "cd packages/pbkdf2 && yarn test",
     "test": "yarn test:sha256 && yarn test:sha512 && yarn test:hmac && yarn test:pbkdf2",
-    "publish:sha256": "cd packages/sha256 && yarn publish",
-    "publish:sha512": "cd packages/sha512 && yarn publish"
+    "publish:sha256": "yarn build:utils && cd packages/sha256 && yarn publish",
+    "publish:sha512": "yarn build:utils && cd packages/sha512 && yarn publish"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^7.1.1",
