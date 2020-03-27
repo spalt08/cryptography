@@ -1,6 +1,6 @@
 # @cryptography/sha512
 [![Bundlephobia](https://img.shields.io/bundlephobia/minzip/@cryptography/sha512)](https://bundlephobia.com/result?p=@cryptography/sha512@0.1.0)
-[![Coverage](https://img.shields.io/codecov/c/github/js-cryptography/sha512?token=617017dc35344eb6b4637420457746c8)](https://codecov.io/gh/js-cryptography/sha512)
+[![Coverage](https://img.shields.io/codecov/c/github/spalt08/cryptography?token=617017dc35344eb6b4637420457746c8)](https://codecov.io/gh/spalt08/cryptography)
 [![Travis CI](https://img.shields.io/travis/spalt08/cryptography)](https://travis-ci.com/spalt08/cryptography)
 
 High-performance synchronous SHA-512 implementation for JavaScript. Optimized for browsers.
