@@ -1,0 +1,18 @@
+comment: off
+
+coverage:
+  status:
+    project:
+      patch:
+        default:
+          target: 80%
+      project:
+        default:
+          target: auto
+flags:
+  sha256:
+    paths:
+      - packages/sha256
+  sha513:
+    paths:
+      - packages/sha513

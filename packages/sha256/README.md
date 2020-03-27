@@ -4,7 +4,7 @@
 [![Travis CI](https://img.shields.io/travis/spalt08/cryptography)](https://travis-ci.com/spalt08/cryptography)
 
 High-performance synchronous SHA-256 implementation for JavaScript. Optimized for browsers.
-
+  
 ## Features
 * Blazing fast
 * Ultra lightweight
