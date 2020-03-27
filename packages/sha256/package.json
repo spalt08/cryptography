@@ -38,7 +38,7 @@
   "bugs": {
     "url": "https://github.com/spalt08/cryptography/issues"
   },
-  "homepage": "https://github.com/spalt08/cryptography#readme",
+  "homepage": "https://github.com/spalt08/cryptography/tree/master/packages/sha256",
   "files": [
     "dist/*",
     "package.json"
