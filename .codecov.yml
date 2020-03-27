@@ -8,6 +8,12 @@ coverage:
     project:
       default:
         target: auto
+      sha256:
+        flags:
+          - sha256
+      sha512:
+        flags:
+          - sha512
 flags:
   sha256:
     paths:
