@@ -3,8 +3,8 @@ import { s2i, i2s, i2h } from '@cryptography/utils';
 /**
  * Creates new SHA-256 state
  */
-function init(): Uint32Array {
-  const h = new Uint32Array(8);
+function init(h?: Uint32Array): Uint32Array {
+  if (!h) h = new Uint32Array(8);
 
   // SHA-256 state contains eight 32-bit integers
   h[0] = 0x6A09E667;
@@ -42,36 +42,31 @@ const _k = new Uint32Array([
   0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
 ]);
 
-/** Reusing vars */
-let t1; let t2; let s0; let s1; let ch; let maj;
-let a; let b; let c; let d; let e; let f; let g; let h;
-let i;
-
 /**
  * Perform round function
  */
 function round(state: Uint32Array, data: Uint32Array) {
   // initialize hash value for this chunk
-  a = state[0];
-  b = state[1];
-  c = state[2];
-  d = state[3];
-  e = state[4];
-  f = state[5];
-  g = state[6];
-  h = state[7];
+  let a = state[0];
+  let b = state[1];
+  let c = state[2];
+  let d = state[3];
+  let e = state[4];
+  let f = state[5];
+  let g = state[6];
+  let h = state[7];
 
   words.set(data);
 
-  for (i = 16; i < 64; i += 1) {
+  for (let i = 16; i < 64; i += 1) {
     // XOR word 2 words ago rot right 17, rot right 19, shft right 10
-    t1 = words[i - 2];
+    let t1 = words[i - 2];
     t1 = ((t1 >>> 17) | (t1 << 15))
       ^ ((t1 >>> 19) | (t1 << 13))
       ^ (t1 >>> 10);
 
     // XOR word 15 words ago rot right 7, rot right 18, shft right 3
-    t2 = words[i - 15];
+    let t2 = words[i - 15];
     t2 = ((t2 >>> 7) | (t2 << 25))
       ^ ((t2 >>> 18) | (t2 << 14))
       ^ (t2 >>> 3);
@@ -81,26 +76,27 @@ function round(state: Uint32Array, data: Uint32Array) {
   }
 
   // Round Function
-  for (i = 0; i < 64; i += 1) {
+  for (let i = 0; i < 64; i += 1) {
     // Sum1(e)
-    s1 = ((e >>> 6) | (e << 26))
+    const s1 = ((e >>> 6) | (e << 26))
       ^ ((e >>> 11) | (e << 21))
       ^ ((e >>> 25) | (e << 7));
 
     // Ch(e, f, g) (optimized the same way as SHA-1)
-    ch = g ^ (e & (f ^ g));
+    const ch = g ^ (e & (f ^ g));
 
     // Sum0(a)
-    s0 = ((a >>> 2) | (a << 30))
+    const s0 = ((a >>> 2) | (a << 30))
       ^ ((a >>> 13) | (a << 19))
       ^ ((a >>> 22) | (a << 10));
 
     // Maj(a, b, c) (optimized the same way as SHA-1)
-    maj = (a & b) | (c & (a ^ b));
+    const maj = (a & b) | (c & (a ^ b));
 
     // main algorithm
-    t1 = h + s1 + ch + _k[i] + words[i];
-    t2 = s0 + maj;
+    const t1 = h + s1 + ch + _k[i] + words[i];
+    const t2 = s0 + maj;
+
     h = g;
     g = f;
     f = e;
@@ -127,7 +123,7 @@ function round(state: Uint32Array, data: Uint32Array) {
  */
 function preprocess(str: string, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
   while (str.length >= 64) {
-    for (i = offset; i < 16; i++) buf[i] = s2i(str, i * 4);
+    for (let i = offset; i < 16; i++) buf[i] = s2i(str, i * 4);
     str = str.slice(64 - offset * 4);
     offset = 0;
 
@@ -164,11 +160,11 @@ function finish(len: number, buf: Uint32Array, state: Uint32Array, offset: numbe
   const len64hi = (len / 0x100000000) >>> 0;
   const len64lo = len >>> 0;
 
-  for (i = offset + 1; i < buf.length; i++) buf[i] = 0;
+  for (let i = offset + 1; i < buf.length; i++) buf[i] = 0;
 
   if (offset >= 14) {
     round(state, buf);
-    for (i = 0; i < buf.length; i++) buf[i] = 0;
+    for (let i = 0; i < buf.length; i++) buf[i] = 0;
   }
 
   buf[14] = (len64hi << 3) | (len64hi >>> 28);
@@ -245,9 +241,9 @@ class Stream {
   offset: number;
   tail: string;
 
-  constructor() {
+  constructor(buf?: Uint32Array) {
     this.buffer = new Uint32Array(16);
-    this.state = init();
+    this.state = init(buf);
     this.length = 0;
     this.offset = 0;
     this.tail = '';
@@ -306,7 +302,7 @@ function sha256(message: string | Uint32Array, format: any = 'array'): string | 
 /**
  * Hash with stream constructor
  */
-sha256.stream = () => new Stream();
+sha256.stream = (buf?: Uint32Array) => new Stream(buf);
 sha256.blockLength = 64;
 sha256.digestLength = 32;
 

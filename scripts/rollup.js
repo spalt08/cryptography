@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 import typescript from '@rollup/plugin-typescript';
+import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 
 export default function getTypeScriptConfig({
@@ -32,6 +33,10 @@ export default function getTypeScriptConfig({
         typescript({
           typescript: require('typescript'),
           exclude: ['tests/*'],
+        }),
+        resolve({
+          jsnext: true,
+          main: false,
         }),
       ],
     },

@@ -15,7 +15,7 @@ export default function pbkdf2(pwd: string, salt: string, iter: number, digest: 
 
   for (let i = 1; i <= parts; i += 1) {
     // PRF(P, S || INT(i)) (first iteration)
-    u.set(hmac(salt + i2s(i), pwdkey, digest));
+    hmac(salt + i2s(i), pwdkey, digest, 'array', u);
     xor.set(u);
 
     // PRF(P, u_{c-1}) (other iterations)

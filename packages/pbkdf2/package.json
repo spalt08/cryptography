@@ -8,11 +8,11 @@
     "build": "rm -rf dist/* && rollup -c",
     "analyze": "npm run build -- --analyze"
   },
-  "dependencies": {
-    "@cryptography/hmac": "^0.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@cryptography/sha512": "^0.1.0"
+    "@cryptography/sha512": "^0.1.0",
+    "@cryptography/hmac": "^0.1.0",
+    "@cryptography/utils": "^0.1.0"
   },
   "main": "dist/cjs/pbkdf2.min.js",
   "module": "dist/es/pbkdf2.js",

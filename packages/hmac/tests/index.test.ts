@@ -5,7 +5,7 @@ console.log(sha256);
 console.log((sha256 as any).sha256);
 test('hmac | string -> array', () => {
   expect(
-    hmac('Test', '\x63\x72\x79\x70\x74\x69\x69', sha256)
+    hmac('Test', hmac.key('\x63\x72\x79\x70\x74\x69\x69', sha256), sha256)
   ).toEqual(
     new Uint32Array([0x69f9d988, 0x4f360ec0, 0x27e59c03, 0x23761b7b, 0x912d3620, 0x8f07c3bb, 0x259b80da, 0x80ec65bb])
   );
@@ -13,7 +13,7 @@ test('hmac | string -> array', () => {
   expect(
     hmac(
       'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-      '\x63\x72\x79\x70\x74\x69\x69\x69\x69',
+      hmac.key('\x63\x72\x79\x70\x74\x69\x69\x69\x69', sha256),
       sha256
     )
   ).toEqual(
@@ -23,7 +23,7 @@ test('hmac | string -> array', () => {
   expect(
     hmac(
       'Sed',
-      '\x63\x72\x79\x70\x74\x69\x69'.repeat(8),
+      hmac.key('\x63\x72\x79\x70\x74\x69\x69'.repeat(8), sha256),
       sha256
     )
   ).toEqual(
@@ -33,7 +33,7 @@ test('hmac | string -> array', () => {
   expect(
     hmac(
       'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-      '\x63\x72\x79\x70\x74\x69\x69'.repeat(8),
+      hmac.key('\x63\x72\x79\x70\x74\x69\x69'.repeat(8), sha256),
       sha256
     )
   ).toEqual(
@@ -43,7 +43,7 @@ test('hmac | string -> array', () => {
   expect(
     hmac(
       'Sed',
-      '\x63\x72\x79\x70\x74\x69\x69'.repeat(10),
+      hmac.key('\x63\x72\x79\x70\x74\x69\x69'.repeat(10), sha256),
       sha256
     )
   ).toEqual(

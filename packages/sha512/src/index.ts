@@ -3,8 +3,8 @@ import { s2i, i2s, i2h } from '@cryptography/utils';
 /**
  * Creates new SHA-256 state
  */
-function init(): Uint32Array {
-  const state = new Uint32Array(16);
+function init(state?: Uint32Array): Uint32Array {
+  if (!state) state = new Uint32Array(16);
 
   // SHA-512 state contains eight 64-bit integers
   state[0] = 0x6a09e667; state[1] = 0xf3bcc908;
@@ -66,42 +66,35 @@ const _k = new Uint32Array([
   0x5fcb6fab, 0x3ad6faec, 0x6c44198c, 0x4a475817,
 ]);
 
-/** Reusing vars */
-let hi; let lo; let t1hi; let t1lo; let t2hi; let t2lo;
-let ahi; let alo; let bhi; let blo; let chi; let clo; let dhi; let dlo;
-let ehi; let elo; let fhi; let flo; let ghi; let glo; let hhi; let hlo;
-let s1hi; let s1lo; let chlo; let chhi; let s0hi; let s0lo; let majhi; let majlo;
-let i = 0;
-
 /**
  * Perform round function
  */
 function round(state: Uint32Array, data: Uint32Array) {
   // initialize hash value for this chunk
-  ahi = state[0]; alo = state[1];
-  bhi = state[2]; blo = state[3];
-  chi = state[4]; clo = state[5];
-  dhi = state[6]; dlo = state[7];
-  ehi = state[8]; elo = state[9];
-  fhi = state[10]; flo = state[11];
-  ghi = state[12]; glo = state[13];
-  hhi = state[14]; hlo = state[15];
+  let ahi = state[0]; let alo = state[1];
+  let bhi = state[2]; let blo = state[3];
+  let chi = state[4]; let clo = state[5];
+  let dhi = state[6]; let dlo = state[7];
+  let ehi = state[8]; let elo = state[9];
+  let fhi = state[10]; let flo = state[11];
+  let ghi = state[12]; let glo = state[13];
+  let hhi = state[14]; let hlo = state[15];
 
   words.set(data);
 
-  for (i = 32; i < 160; i += 2) {
+  for (let i = 32; i < 160; i += 2) {
     // for word 2 words ago: ROTR 19(x) ^ ROTR 61(x) ^ SHR 6(x)
-    hi = words[i - 4];
-    lo = words[i - 3];
+    let hi = words[i - 4];
+    let lo = words[i - 3];
 
     // high bits
-    t1hi = (
+    const t1hi = (
       ((hi >>> 19) | (lo << 13)) // ROTR 19
       ^ ((lo >>> 29) | (hi << 3)) // ROTR 61/(swap + ROTR 29)
       ^ (hi >>> 6)) >>> 0; // SHR 6
 
     // low bits
-    t1lo = (
+    const t1lo = (
       ((hi << 13) | (lo >>> 19)) // ROTR 19
       ^ ((lo << 3) | (hi >>> 29)) // ROTR 61/(swap + ROTR 29)
       ^ ((hi << 26) | (lo >>> 6))) >>> 0; // SHR 6
@@ -111,13 +104,13 @@ function round(state: Uint32Array, data: Uint32Array) {
     lo = words[i - 29];
 
     // high bits
-    t2hi = (
+    const t2hi = (
       ((hi >>> 1) | (lo << 31)) // ROTR 1
       ^ ((hi >>> 8) | (lo << 24)) // ROTR 8
       ^ (hi >>> 7)) >>> 0; // SHR 7
 
     // low bits
-    t2lo = (
+    const t2lo = (
       ((hi << 31) | (lo >>> 1)) // ROTR 1
       ^ ((hi << 24) | (lo >>> 8)) // ROTR 8
       ^ ((hi << 25) | (lo >>> 7))) >>> 0; // SHR 7
@@ -129,46 +122,46 @@ function round(state: Uint32Array, data: Uint32Array) {
   }
 
   // Round function
-  for (i = 0; i < 160; i += 2) {
+  for (let i = 0; i < 160; i += 2) {
     // Sum1(e) = ROTR 14(e) ^ ROTR 18(e) ^ ROTR 41(e)
-    s1hi = (
+    const s1hi = (
       ((ehi >>> 14) | (elo << 18)) // ROTR 14
       ^ ((ehi >>> 18) | (elo << 14)) // ROTR 18
       ^ ((elo >>> 9) | (ehi << 23))) >>> 0; // ROTR 41/(swap + ROTR 9)
 
-    s1lo = (
+    const s1lo = (
       ((ehi << 18) | (elo >>> 14)) // ROTR 14
       ^ ((ehi << 14) | (elo >>> 18)) // ROTR 18
       ^ ((elo << 23) | (ehi >>> 9))) >>> 0; // ROTR 41/(swap + ROTR 9)
 
     // Ch(e, f, g) (optimized the same way as SHA-1)
-    chhi = (ghi ^ (ehi & (fhi ^ ghi))) >>> 0;
-    chlo = (glo ^ (elo & (flo ^ glo))) >>> 0;
+    const chhi = (ghi ^ (ehi & (fhi ^ ghi))) >>> 0;
+    const chlo = (glo ^ (elo & (flo ^ glo))) >>> 0;
 
     // Sum0(a) = ROTR 28(a) ^ ROTR 34(a) ^ ROTR 39(a)
-    s0hi = (
+    const s0hi = (
       ((ahi >>> 28) | (alo << 4)) // ROTR 28
       ^ ((alo >>> 2) | (ahi << 30)) // ROTR 34/(swap + ROTR 2)
       ^ ((alo >>> 7) | (ahi << 25))) >>> 0; // ROTR 39/(swap + ROTR 7)
 
-    s0lo = (
+    const s0lo = (
       ((ahi << 4) | (alo >>> 28)) // ROTR 28
       ^ ((alo << 30) | (ahi >>> 2)) // ROTR 34/(swap + ROTR 2)
       ^ ((alo << 25) | (ahi >>> 7))) >>> 0; // ROTR 39/(swap + ROTR 7)
 
     // Maj(a, b, c) (optimized the same way as SHA-1)
-    majhi = ((ahi & bhi) | (chi & (ahi ^ bhi))) >>> 0;
-    majlo = ((alo & blo) | (clo & (alo ^ blo))) >>> 0;
+    const majhi = ((ahi & bhi) | (chi & (ahi ^ bhi))) >>> 0;
+    const majlo = ((alo & blo) | (clo & (alo ^ blo))) >>> 0;
 
     // main algorithm
     // t1 = (h + s1 + ch + _k[i] + _w[i]) modulo 2^64 (carry lo overflow)
-    t1lo = (hlo + s1lo + chlo + _k[i + 1] + words[i + 1]);
-    t1hi = (hhi + s1hi + chhi + _k[i] + words[i] + ((t1lo / 0x100000000) >>> 0)) >>> 0;
+    let t1lo = (hlo + s1lo + chlo + _k[i + 1] + words[i + 1]);
+    const t1hi = (hhi + s1hi + chhi + _k[i] + words[i] + ((t1lo / 0x100000000) >>> 0)) >>> 0;
     t1lo >>>= 0;
 
     // t2 = s0 + maj modulo 2^64 (carry lo overflow)
-    t2lo = s0lo + majlo;
-    t2hi = (s0hi + majhi + ((t2lo / 0x100000000) >>> 0)) >>> 0;
+    let t2lo = s0lo + majlo;
+    const t2hi = (s0hi + majhi + ((t2lo / 0x100000000) >>> 0)) >>> 0;
     t2lo >>>= 0;
 
     // Update working variables
@@ -202,7 +195,7 @@ function round(state: Uint32Array, data: Uint32Array) {
   }
 
   // update hash state (additional modulo 2^64)
-  lo = state[1] + alo;
+  let lo = state[1] + alo;
   state[0] = state[0] + ahi + ((lo / 0x100000000) >>> 0);
   state[1] = lo;
 
@@ -240,7 +233,7 @@ function round(state: Uint32Array, data: Uint32Array) {
  */
 function preprocess(str: string, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
   while (str.length >= 128) {
-    for (i = offset; i < 32; i++) buf[i] = s2i(str, i * 4);
+    for (let i = offset; i < 32; i++) buf[i] = s2i(str, i * 4);
 
     str = str.slice(128 - offset * 4);
     offset = 0;
@@ -275,11 +268,11 @@ function process(input: Uint32Array, buf: Uint32Array, state: Uint32Array, offse
  * Repeatable part
  */
 function finish(len: number, buf: Uint32Array, state: Uint32Array, offset: number = 0) {
-  for (i = offset + 1; i < buf.length; i++) buf[i] = 0;
+  for (let i = offset + 1; i < buf.length; i++) buf[i] = 0;
 
   if (offset >= 28) {
     round(state, buf);
-    for (i = 0; i < buf.length; i++) buf[i] = 0;
+    for (let i = 0; i < buf.length; i++) buf[i] = 0;
   }
 
   buf[30] = ((len * 8) / 0x100000000) >>> 0;
@@ -356,9 +349,9 @@ class Stream {
   offset: number;
   tail: string;
 
-  constructor() {
+  constructor(buf?: Uint32Array) {
     this.buffer = new Uint32Array(32);
-    this.state = init();
+    this.state = init(buf);
     this.length = 0;
     this.offset = 0;
     this.tail = '';
@@ -417,7 +410,7 @@ function sha512(message: string | Uint32Array, format: any = 'array'): string | 
 /**
  * Hash with stream constructor
  */
-sha512.stream = () => new Stream();
+sha512.stream = (buf?: Uint32Array) => new Stream(buf);
 sha512.blockLength = 128;
 sha512.digestLength = 64;
 

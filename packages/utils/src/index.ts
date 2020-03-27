@@ -9,7 +9,7 @@ export interface HashStream {
 export interface HashFunction {
   (message: string | Uint32Array): Uint32Array;
   (message: string | Uint32Array, format: 'hex' | 'binary'): string;
-  stream(): HashStream;
+  stream(buf?: Uint32Array): HashStream;
   blockLength: number;
   digestLength: number;
 }

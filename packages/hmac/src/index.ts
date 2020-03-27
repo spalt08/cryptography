@@ -4,19 +4,12 @@ import type { HashFunction } from '@cryptography/utils';
 /**
  * Produces the Message Authentication Code (MAC).
  */
-function hmac(message: string, key: string, digest: HashFunction): Uint32Array;
-function hmac(message: string, key: string, digest: HashFunction, format: 'hex' | 'binary'): string;
-function hmac(message: string | Uint32Array, key: Uint32Array, digest: HashFunction): Uint32Array;
-function hmac(message: string | Uint32Array, key: Uint32Array, digest: HashFunction, format: 'hex' | 'binary'): string;
-function hmac(message: string | Uint32Array, key: string | Uint32Array, digest: HashFunction, format: any = 'array'): string | Uint32Array {
+function hmac(message: string | Uint32Array, key: Uint32Array, digest: HashFunction, formay?: 'array', buf?: Uint32Array): Uint32Array;
+function hmac(message: string | Uint32Array, key: Uint32Array, digest: HashFunction, format: 'hex' | 'binary', buf?: Uint32Array): string;
+function hmac(message: string | Uint32Array, key: Uint32Array, digest: HashFunction, format?: any, buf?: Uint32Array): string | Uint32Array {
   const ilen = digest.blockLength / 4;
   const ipad = new Uint32Array(ilen);
   const opad = new Uint32Array(ilen);
-
-  // convert key to buffer
-  if (typeof key === 'string') {
-    key = hmac.key(key, digest);
-  }
 
   // mix key into inner and outer padding
   // ipadding = [0x36 * blocksize] ^ key
@@ -28,7 +21,7 @@ function hmac(message: string | Uint32Array, key: string | Uint32Array, digest: 
 
   // digest is done like so: hash(opadding | hash(ipadding | message))
   const inner = digest.stream().update(ipad).update(message).digest();
-  return digest.stream().update(opad).update(inner).digest(format);
+  return digest.stream(buf).update(opad).update(inner).digest(format);
 }
 
 /**
