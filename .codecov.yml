@@ -12,6 +12,6 @@ flags:
   sha256:
     paths:
       - packages/sha256
-  sha513:
+  sha512:
     paths:
-      - packages/sha513
+      - packages/sha512
