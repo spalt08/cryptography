@@ -26,10 +26,11 @@ export default class AES {
 
     let rcon = 1;
     let i = key.length;
+    let tmp;
 
     // schedule encryption keys
     for (; i < 4 * key.length + 28; i++) {
-      let tmp = this.encKey[i - 1];
+      tmp = this.encKey[i - 1];
 
       // apply sbox
       if (i % key.length === 0 || (key.length === 8 && i % key.length === 4)) {
@@ -47,7 +48,7 @@ export default class AES {
 
     // schedule decryption keys
     for (let j = 0; i; j++, i--) {
-      const tmp = this.encKey[j & 3 ? i : i - 4];
+      tmp = this.encKey[j & 3 ? i : i - 4];
       if (i <= 4 || j < 4) {
         this.decKey[j] = tmp;
       } else {
@@ -61,9 +62,9 @@ export default class AES {
     }
   }
 
-  encrypt(_message: string | Uint32Array | Uint8Array, buf?: Uint32Array) {
+  encrypt(_message: string | Uint32Array | Uint8Array) {
     const message = getWords(_message);
-    const out = buf || new Uint32Array(4);
+    const out = new Uint32Array(4);
 
     let a = message[0] ^ this.encKey[0];
     let b = message[1] ^ this.encKey[1];
@@ -102,9 +103,9 @@ export default class AES {
     return out;
   }
 
-  decrypt(_message: string | Uint32Array | Uint8Array, buf?: Uint32Array) {
+  decrypt(_message: string | Uint32Array | Uint8Array) {
     const message = getWords(_message);
-    const out = buf || new Uint32Array(4);
+    const out = new Uint32Array(4);
 
     let a = message[0] ^ this.decKey[0];
     let b = message[3] ^ this.decKey[1];
@@ -113,13 +114,15 @@ export default class AES {
 
     const rounds = this.decKey.length / 4 - 2;
 
+    let a2; let b2; let c2;
+
     let k = 4;
 
     // Inner rounds.  Cribbed from OpenSSL.
     for (let i = 0; i < rounds; i++) {
-      const a2 = T5[a >>> 24] ^ T6[(b >> 16) & 255] ^ T7[(c >> 8) & 255] ^ T8[d & 255] ^ this.decKey[k];
-      const b2 = T5[b >>> 24] ^ T6[(c >> 16) & 255] ^ T7[(d >> 8) & 255] ^ T8[a & 255] ^ this.decKey[k + 1];
-      const c2 = T5[c >>> 24] ^ T6[(d >> 16) & 255] ^ T7[(a >> 8) & 255] ^ T8[b & 255] ^ this.decKey[k + 2];
+      a2 = T5[a >>> 24] ^ T6[(b >> 16) & 255] ^ T7[(c >> 8) & 255] ^ T8[d & 255] ^ this.decKey[k];
+      b2 = T5[b >>> 24] ^ T6[(c >> 16) & 255] ^ T7[(d >> 8) & 255] ^ T8[a & 255] ^ this.decKey[k + 1];
+      c2 = T5[c >>> 24] ^ T6[(d >> 16) & 255] ^ T7[(a >> 8) & 255] ^ T8[b & 255] ^ this.decKey[k + 2];
       d = T5[d >>> 24] ^ T6[(a >> 16) & 255] ^ T7[(b >> 8) & 255] ^ T8[c & 255] ^ this.decKey[k + 3];
       a = a2; b = b2; c = c2;
       k += 4;
@@ -134,7 +137,7 @@ export default class AES {
       ^ Si[d & 255]
       ^ this.decKey[k++]
       );
-      const a2 = a; a = b; b = c; c = d; d = a2;
+      a2 = a; a = b; b = c; c = d; d = a2;
     }
 
     return out;
