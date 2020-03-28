@@ -21,6 +21,15 @@ npm install @cryptography/sha512
 yarn add @cryptography/sha512
 ```
 
+### When you should use @cryptography/sha512
+* Hashing small inputs (< 5kb)
+* Key derivation functions
+* 100% browser support required
+
+### ⚠️ When you should not use this (WebCrypto API preferred cases)
+* Hashing files (> 5kb)
+* Concurrent hashing large amount of messages
+
 ## Usage
 This package is optimized for small byte inputs (<10kb).
 
