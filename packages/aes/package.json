@@ -11,9 +11,7 @@
     "pretest": "npm run build",
     "publish": "npm publish"
   },
-  "devDependencies": {
-    "@cryptography/utils": "^1.0.0"
-  },
+  "devDependencies": {},
   "main": "dist/cjs/aes.min.js",
   "module": "dist/es/aes.js",
   "types": "dist/typings/index.d.ts",
@@ -38,7 +36,7 @@
   "bugs": {
     "url": "https://github.com/spalt08/cryptography/issues"
   },
-  "homepage": "https://github.com/spalt08/cryptography/tree/master/packages/sha256",
+  "homepage": "https://github.com/spalt08/cryptography/tree/master/packages/aes",
   "files": [
     "dist/*",
     "package.json"

@@ -24,23 +24,21 @@ export default class AES_IGE {
     const text = getWords(message);
     const cipherText = buf || new Uint32Array(text.length);
 
-    const prevX = this.iv.subarray(this.blockSize, this.iv.length);
-    const prevY = this.iv.subarray(0, this.blockSize);
-    const x = new Uint32Array(this.blockSize);
-    const y = new Uint32Array(this.blockSize);
+    let prevX = this.iv.subarray(this.blockSize, this.iv.length);
+    let prevY = this.iv.subarray(0, this.blockSize);
     const yXOR = new Uint32Array(this.blockSize);
 
     for (let i = 0; i < text.length; i += this.blockSize) {
-      x.set(text.subarray(i, i + this.blockSize));
-      xor(x, prevX, yXOR);
+      const x = text.subarray(i, i + this.blockSize);
+      xor(x, prevY, yXOR);
 
-      y.set(this.cipher.encrypt(yXOR));
+      const y = this.cipher.encrypt(yXOR);
       xor(y, prevX);
 
-      prevX.set(x);
-      prevY.set(y);
+      prevX = x;
+      prevY = y;
 
-      cipherText.set(y, i);
+      for (let j = i, k = 0; j < text.length && k < 4; j++, k++) cipherText[j] = y[k];
     }
 
     return cipherText;
@@ -53,23 +51,21 @@ export default class AES_IGE {
     const cipherText = getWords(message);
     const text = buf || new Uint32Array(cipherText.length);
 
-    const prevY = this.iv.subarray(this.blockSize, this.iv.length);
-    const prevX = this.iv.subarray(0, this.blockSize);
-    const x = new Uint32Array(this.blockSize);
-    const y = new Uint32Array(this.blockSize);
+    let prevY = this.iv.subarray(this.blockSize, this.iv.length);
+    let prevX = this.iv.subarray(0, this.blockSize);
     const yXOR = new Uint32Array(this.blockSize);
 
     for (let i = 0; i < text.length; i += this.blockSize) {
-      x.set(cipherText.subarray(i, i + this.blockSize));
+      const x = cipherText.subarray(i, i + this.blockSize);
       xor(x, prevY, yXOR);
 
-      y.set(this.cipher.decrypt(yXOR));
+      const y = this.cipher.decrypt(yXOR);
       xor(y, prevX);
 
-      prevX.set(x);
-      prevY.set(y);
+      prevX = x;
+      prevY = y;
 
-      text.set(y, i);
+      for (let j = i, k = 0; j < text.length && k < 4; j++, k++) text[j] = y[k];
     }
 
     return text;

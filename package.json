@@ -9,6 +9,7 @@
     "build:sha512": "yarn build:utils && cd packages/sha512 && yarn build",
     "build:hmac": "yarn build:utils cd packages/hmac && yarn build",
     "build:pbkdf2": "yarn build:hmac cd packages/pbkdf2 && yarn build",
+    "build:aes": "cd packages/aes && yarn build",
     "build": "yarn build:hmac && yarn build:sha256 && yarn build:sha512 && yarn build:hmac && yarn build:pbkdf2",
     "lint:utils": "eslint --ext ts ./packages/utils/src",
     "lint:sha256": "eslint --ext ts ./packages/sha256/src",

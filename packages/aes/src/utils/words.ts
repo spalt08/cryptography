@@ -10,7 +10,7 @@ export function getWords(key: string | Uint8Array | Uint32Array) {
   }
 
   if (typeof key === 'string') {
-    if (key.length % 4 !== 0) throw new Error('Input should be multiple of 4');
+    if (key.length % 4 !== 0) for (let i = key.length % 4; i <= 4; i++) key += '\0x00';
 
     const buf = new Uint32Array(key.length / 4);
     for (let i = 0; i < key.length; i += 4) buf[i / 4] = s2i(key, i);
