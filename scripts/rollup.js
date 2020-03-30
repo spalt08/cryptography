@@ -56,7 +56,7 @@ export default function getTypeScriptConfig({
           rootDir: 'src',
           composite: true,
           exclude: ['tests/*'],
-          include: ['src/*'],
+          include: ['src/**/*'],
         }),
       ],
     },
