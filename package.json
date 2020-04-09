@@ -14,6 +14,7 @@
     "lint:utils": "eslint --ext ts ./packages/utils/src",
     "lint:sha256": "eslint --ext ts ./packages/sha256/src",
     "lint:hmac": "eslint --ext ts ./packages/hmac/src",
+    "test:sha1": "cd packages/sha1 && yarn test",
     "test:sha256": "cd packages/sha256 && yarn test",
     "test:sha512": "cd packages/sha512 && yarn test",
     "test:hmac": "cd packages/hmac && yarn test",
@@ -21,7 +22,9 @@
     "test:aes": "cd packages/aes && yarn test",
     "test": "yarn test:sha256 && yarn test:sha512 && yarn test:hmac && yarn test:pbkdf2",
     "publish:sha256": "yarn build:utils && cd packages/sha256 && yarn publish",
-    "publish:sha512": "yarn build:utils && cd packages/sha512 && yarn publish"
+    "publish:sha1": "yarn build:utils && cd packages/sha1 && yarn publish",
+    "publish:sha512": "yarn build:utils && cd packages/sha512 && yarn publish",
+    "publish:aes": "cd packages/aes && yarn publish"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^7.1.1",
