@@ -15,4 +15,21 @@ test('aes | ctr', () => {
       0xa75f582b, 0x111e928a, 0xe531a534
     ])
   );
+
+  const cipher = new AES_CTR(
+    new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+    new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  );
+
+  expect(
+    cipher.encrypt(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+  ).toEqual(
+    new Uint32Array([0x66e94bd4, 0xef8a2c3b, 0x884cfa59, 0xca342b2e]),
+  );
+
+  expect(
+    cipher.encrypt(new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])),
+  ).toEqual(
+    new Uint32Array([0x58e2fcce, 0xfa7e3061, 0x367f1d57, 0xa4e7455a]),
+  );
 });
