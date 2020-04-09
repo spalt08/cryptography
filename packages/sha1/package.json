@@ -1,0 +1,47 @@
+{
+  "name": "@cryptography/sha1",
+  "description": "High-performance synchronous SHA-1 implementation for JavaScript",
+  "version": "0.2.0",
+  "author": "Konstantin Darutkin",
+  "scripts": {
+    "test": "jest --coverage",
+    "build": "rm -rf dist/* && rollup -c",
+    "analyze": "npm run build -- --analyze",
+    "prepublish": "npm test",
+    "pretest": "npm run build",
+    "publish": "npm publish"
+  },
+  "devDependencies": {
+    "@cryptography/utils": "^1.0.0"
+  },
+  "main": "dist/cjs/sha1.min.js",
+  "module": "dist/es/sha1.js",
+  "types": "dist/typings/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spalt08/cryptography.git",
+    "directory": "packages/sha1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "eslint"
+    ]
+  },
+  "keywords": [
+    "sha1",
+    "javascript",
+    "crypto"
+  ],
+  "bugs": {
+    "url": "https://github.com/spalt08/cryptography/issues"
+  },
+  "homepage": "https://github.com/spalt08/cryptography/tree/master/packages/sha1",
+  "files": [
+    "dist/*",
+    "package.json"
+  ],
+  "license": "GPL-3.0-or-later"
+}
