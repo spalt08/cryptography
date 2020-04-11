@@ -9,6 +9,7 @@ export default class AES_IGE {
   key: Uint32Array;
   counter: Uint32Array;
   blockSize: number;
+  offset = 0;
 
   constructor(key: string | Uint32Array | Uint8Array, counter: string | Uint32Array | Uint8Array, blockSize = 16) {
     this.key = getWords(key);
@@ -28,16 +29,19 @@ export default class AES_IGE {
     const text = getWords(message);
     const cipherText = buf || new Uint32Array(text.length);
 
+    let offset = this.offset;
     for (let i = 0; i < text.length; i += this.blockSize) {
       const x = this.cipher.encrypt(this.counter);
+      for (let j = i, k = offset; j < text.length && k < this.blockSize; j++, k++) cipherText[j] = x[k] ^ text[j];
 
-      for (let j = i, k = 0; j < text.length && k < this.blockSize; j++, k++) cipherText[j] = x[k] ^ text[j];
-
-      // increment counter
-      for (let carry = this.counter.length - 1; carry >= 0; carry--) {
-        if (++this.counter[carry] < 0xFFFFFFFF) break; // If overflowing, it'll be 0 and we'll have to continue propagating the carry
+      if (text.length - i >= this.blockSize) this.incrementCounter();
+      if (offset) {
+        i -= offset;
+        offset = 0;
       }
     }
+
+    this.offset = (this.offset + (text.length % 4)) % 4;
 
     return cipherText;
   }
@@ -47,5 +51,12 @@ export default class AES_IGE {
    */
   decrypt(message: string | Uint32Array | Uint8Array, buf?: Uint32Array) {
     return this.encrypt(message, buf);
+  }
+
+  incrementCounter() {
+    // increment counter
+    for (let carry = this.counter.length - 1; carry >= 0; carry--) {
+      if (++this.counter[carry] < 0xFFFFFFFF) break; // If overflowing, it'll be 0 and we'll have to continue propagating the carry
+    }
   }
 }
