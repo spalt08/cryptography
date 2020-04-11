@@ -1,5 +1,18 @@
 import { s2i } from '@cryptography/utils';
-import type { HashFunction } from '@cryptography/utils';
+
+export interface HashStream {
+  update(chunk: string | Uint32Array): HashStream;
+  digest(): Uint32Array;
+  digest(format: 'hex' | 'binary'): string;
+}
+
+export interface HashFunction {
+  (message: string | Uint32Array): Uint32Array;
+  (message: string | Uint32Array, format: 'hex' | 'binary'): string;
+  stream(buf?: Uint32Array): HashStream;
+  blockLength: number;
+  digestLength: number;
+}
 
 /**
  * Produces the Message Authentication Code (MAC).
@@ -27,15 +40,17 @@ function hmac(message: string | Uint32Array, key: Uint32Array, digest: HashFunct
 /**
  * Prepare string key for hmac
  */
-hmac.key = (str: string, digest: HashFunction) => {
-  let key: Uint32Array;
+hmac.key = (src: string | Uint32Array, digest: HashFunction) => {
+  if (src instanceof Uint32Array) {
+    if (src.length > digest.blockLength / 4) return digest(src);
+    return src;
+  }
 
   // if key is longer than blocksize, hash it
-  if (str.length > digest.blockLength) key = digest(str);
-  else {
-    key = new Uint32Array(digest.blockLength);
-    for (let i = 0; i < str.length; i += 4) key[i / 4] = s2i(str, i);
-  }
+  if (src.length > digest.blockLength) return digest(src);
+
+  const key = new Uint32Array(digest.blockLength);
+  for (let i = 0; i < src.length; i += 4) key[i / 4] = s2i(src, i);
 
   return key;
 };

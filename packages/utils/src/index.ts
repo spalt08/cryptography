@@ -1,7 +1,7 @@
 export { i2h, i2s, s2i } from './converters';
 
 export interface HashStream {
-  update(message: string | Uint32Array): HashStream;
+  update(chunk: string | Uint32Array): HashStream;
   digest(): Uint32Array;
   digest(format: 'hex' | 'binary'): string;
 }

@@ -1,8 +1,21 @@
 import hmac from '@cryptography/hmac';
 import { i2s } from '@cryptography/utils';
-import type { HashFunction } from '@cryptography/utils';
 
-export default function pbkdf2(pwd: string, salt: string, iter: number, digest: HashFunction, out: number = 64) {
+export interface HashStream {
+  update(chunk: string | Uint32Array): HashStream;
+  digest(): Uint32Array;
+  digest(format: 'hex' | 'binary'): string;
+}
+
+export interface HashFunction {
+  (message: string | Uint32Array): Uint32Array;
+  (message: string | Uint32Array, format: 'hex' | 'binary'): string;
+  stream(buf?: Uint32Array): HashStream;
+  blockLength: number;
+  digestLength: number;
+}
+
+export default function pbkdf2(pwd: string | Uint32Array, salt: string, iter: number, digest: HashFunction, out: number = 64) {
   const parts = Math.ceil(out / digest.digestLength);
   const round = (out - (parts - 1) * digest.digestLength) / 4;
 

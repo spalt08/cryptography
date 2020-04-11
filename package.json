@@ -7,8 +7,8 @@
     "build:utils": "cd packages/utils && yarn build",
     "build:sha256": "yarn build:utils && cd packages/sha256 && yarn build",
     "build:sha512": "yarn build:utils && cd packages/sha512 && yarn build",
-    "build:hmac": "yarn build:utils cd packages/hmac && yarn build",
-    "build:pbkdf2": "yarn build:hmac cd packages/pbkdf2 && yarn build",
+    "build:hmac": "yarn build:utils && cd packages/hmac && yarn build",
+    "build:pbkdf2": "yarn build:hmac && cd packages/pbkdf2 && yarn build",
     "build:aes": "cd packages/aes && yarn build",
     "build": "yarn build:hmac && yarn build:sha256 && yarn build:sha512 && yarn build:hmac && yarn build:pbkdf2",
     "lint:utils": "eslint --ext ts ./packages/utils/src",
@@ -24,7 +24,8 @@
     "publish:sha256": "yarn build:utils && cd packages/sha256 && yarn publish",
     "publish:sha1": "yarn build:utils && cd packages/sha1 && yarn publish",
     "publish:sha512": "yarn build:utils && cd packages/sha512 && yarn publish",
-    "publish:aes": "cd packages/aes && yarn publish"
+    "publish:aes": "cd packages/aes && yarn publish",
+    "publish:pbkdf2": "yarn build:hmac && cd packages/pbkdf2 && yarn publish"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^7.1.1",

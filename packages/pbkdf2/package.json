@@ -1,23 +1,24 @@
 {
   "name": "@cryptography/pbkdf2",
-  "description": "https://github.com/js-cryptography/sha256",
-  "version": "0.1.0",
+  "description": "https://github.com/spalt08/cryptography",
+  "version": "0.1.1",
   "author": "Konstantin Darutkin",
   "scripts": {
     "test": "jest --coverage",
     "build": "rm -rf dist/* && rollup -c",
-    "analyze": "npm run build -- --analyze"
+    "analyze": "npm run build -- --analyze",
+    "prepublish": "npm test",
+    "pretest": "npm run build",
+    "publish": "npm publish"
   },
   "dependencies": {},
-  "devDependencies": {
-    "@cryptography/sha512": "^0.1.0"
-  },
+  "devDependencies": {},
   "main": "dist/cjs/pbkdf2.min.js",
   "module": "dist/es/pbkdf2.js",
   "types": "dist/typings/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/js-cryptography/sha256.git",
+    "url": "git+https://github.com/spalt08/cryptography.git",
     "directory": "packages/pbkdf2"
   },
   "lint-staged": {
@@ -34,9 +35,9 @@
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/js-cryptography/sha256/issues"
+    "url": "https://github.com/spalt08/cryptography/issues"
   },
-  "homepage": "https://github.com/js-cryptography/sha256#readme",
+  "homepage": "https://github.com/spalt08/cryptography/tree/master/packages/pbkdf2",
   "files": [
     "dist/*",
     "package.json"

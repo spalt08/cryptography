@@ -1,7 +1,7 @@
 {
   "name": "@cryptography/aes",
   "description": "High-performance synchronous AES implementation for JavaScript",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Konstantin Darutkin",
   "scripts": {
     "test": "jest --coverage",

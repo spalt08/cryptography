@@ -1,8 +1,6 @@
 import sha256 from '@cryptography/sha256';
 import hmac from '../src';
 
-console.log(sha256);
-console.log((sha256 as any).sha256);
 test('hmac | string -> array', () => {
   expect(
     hmac('Test', hmac.key('\x63\x72\x79\x70\x74\x69\x69', sha256), sha256)
