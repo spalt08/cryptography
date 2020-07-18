@@ -198,14 +198,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@cryptography/sha256@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@cryptography/sha256/-/sha256-0.1.4.tgz#bf0e6d5d995ac45b7a0491ad3c9eede2182f682d"
-
-"@cryptography/sha512@^0.1.0":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@cryptography/sha512/-/sha512-0.1.2.tgz#2ccea40b3918a55ca95a55d304cec36368ffb980"
-
 "@evocateur/libnpmaccess@^3.1.2":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@evocateur/libnpmaccess/-/libnpmaccess-3.1.2.tgz#ecf7f6ce6b004e9f942b098d92200be4a4b1c845"
@@ -4583,8 +4575,8 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
 lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.2.1:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
+  version "4.17.19"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
 
 lolex@^5.0.0:
   version "5.1.2"
