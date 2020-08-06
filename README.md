@@ -1,5 +1,4 @@
 # Cryptography JS
-[![Travis CI](https://img.shields.io/travis/spalt08/cryptography)](https://travis-ci.com/spalt08/cryptography)
 [![Coverage](https://img.shields.io/codecov/c/github/spalt08/cryptography?token=617017dc35344eb6b4637420457746c8)](https://codecov.io/gh/spalt08/cryptography)
 
 High-performance cryptographic packages for JavaScript. Optimized for browsers.
